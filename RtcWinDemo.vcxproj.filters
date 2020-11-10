@@ -1,0 +1,146 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="demo">
+      <UniqueIdentifier>{b4d419fc-87a1-4eb1-96f8-a69680649002}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="res">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="rtc">
+      <UniqueIdentifier>
+      </UniqueIdentifier>
+    </Filter>
+    <Filter Include="json">
+      <UniqueIdentifier>{3bf48b83-b68e-42e3-a2b7-d1c9912ff7dd}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="framework.h">
+      <Filter>demo</Filter>
+    </ClInclude>
+    <ClInclude Include="pch.h">
+      <Filter>demo</Filter>
+    </ClInclude>
+    <ClInclude Include="Resource.h">
+      <Filter>demo</Filter>
+    </ClInclude>
+    <ClInclude Include="RtcWinDemo.h">
+      <Filter>demo</Filter>
+    </ClInclude>
+    <ClInclude Include="RtcWinDemoDlg.h">
+      <Filter>demo</Filter>
+    </ClInclude>
+    <ClInclude Include="targetver.h">
+      <Filter>demo</Filter>
+    </ClInclude>
+    <ClInclude Include="VideoView.h">
+      <Filter>demo</Filter>
+    </ClInclude>
+    <ClInclude Include="RtcWinUtils.h">
+      <Filter>demo</Filter>
+    </ClInclude>
+    <ClInclude Include="WsClient.h">
+      <Filter>demo</Filter>
+    </ClInclude>
+    <ClInclude Include="json\cJSON.h">
+      <Filter>json</Filter>
+    </ClInclude>
+    <ClInclude Include="json\cJSON_Utils.h">
+      <Filter>json</Filter>
+    </ClInclude>
+    <ClInclude Include="RtcClient.h">
+      <Filter>demo</Filter>
+    </ClInclude>
+    <ClInclude Include="rtc\capture_track_source.h">
+      <Filter>rtc</Filter>
+    </ClInclude>
+    <ClInclude Include="rtc\vcm_capture.h">
+      <Filter>rtc</Filter>
+    </ClInclude>
+    <ClInclude Include="rtc\rtc_video_capturer.h">
+      <Filter>rtc</Filter>
+    </ClInclude>
+    <ClInclude Include="rtc\peer_connection_observer.h">
+      <Filter>rtc</Filter>
+    </ClInclude>
+    <ClInclude Include="rtc\rtc_connection.h">
+      <Filter>rtc</Filter>
+    </ClInclude>
+    <ClInclude Include="rtc\rtc_data_manager.h">
+      <Filter>rtc</Filter>
+    </ClInclude>
+    <ClInclude Include="rtc\rtc_manager.h">
+      <Filter>rtc</Filter>
+    </ClInclude>
+    <ClInclude Include="rtc\rtc_message_sender.h">
+      <Filter>rtc</Filter>
+    </ClInclude>
+    <ClInclude Include="rtc\video_track_receiver.h">
+      <Filter>rtc</Filter>
+    </ClInclude>
+    <ClInclude Include="rtc\video_render_gdi.h">
+      <Filter>rtc</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="RtcWinDemoDlg.cpp">
+      <Filter>demo</Filter>
+    </ClCompile>
+    <ClCompile Include="pch.cpp">
+      <Filter>demo</Filter>
+    </ClCompile>
+    <ClCompile Include="RtcWinDemo.cpp">
+      <Filter>demo</Filter>
+    </ClCompile>
+    <ClCompile Include="RtcWinUtils.cpp">
+      <Filter>demo</Filter>
+    </ClCompile>
+    <ClCompile Include="WsClient.cpp">
+      <Filter>demo</Filter>
+    </ClCompile>
+    <ClCompile Include="json\cJSON.c">
+      <Filter>json</Filter>
+    </ClCompile>
+    <ClCompile Include="json\cJSON_Utils.c">
+      <Filter>json</Filter>
+    </ClCompile>
+    <ClCompile Include="rtc\peer_connection_observer.cpp">
+      <Filter>rtc</Filter>
+    </ClCompile>
+    <ClCompile Include="rtc\rtc_connection.cpp">
+      <Filter>rtc</Filter>
+    </ClCompile>
+    <ClCompile Include="rtc\rtc_manager.cpp">
+      <Filter>rtc</Filter>
+    </ClCompile>
+    <ClCompile Include="rtc\vcm_capture.cpp">
+      <Filter>rtc</Filter>
+    </ClCompile>
+    <ClCompile Include="rtc\rtc_video_capturer.cpp">
+      <Filter>rtc</Filter>
+    </ClCompile>
+    <ClCompile Include="rtc\video_render_gdi.cpp">
+      <Filter>rtc</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="RtcWinDemo.rc">
+      <Filter>res</Filter>
+    </ResourceCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="res\RtcWinDemo.rc2">
+      <Filter>res</Filter>
+    </None>
+    <None Include="cacert.pem">
+      <Filter>res</Filter>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="res\RtcWinDemo.ico">
+      <Filter>res</Filter>
+    </Image>
+  </ItemGroup>
+</Project>
