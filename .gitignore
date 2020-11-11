@@ -2,10 +2,10 @@
 webrtc
 # visual studio
 .vs
-x64
-.user
-.filter
-bin
+x64/
+*.user
+*.filters
+bin/
 
 
 # Prerequisites
