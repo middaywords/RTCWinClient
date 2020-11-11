@@ -9,7 +9,8 @@ Goal
 Bugs to be fixed
 
 - [ ] Show video in different windows.
-- [ ] Receive text message
+- [x] `CRtcWinDemoDlg::OnBnClickedBtnSend() ` no action 
+- [ ] `CRtcWinDemoDlg::AllocateWindow(...)` does not support showing multiple video tracks
 
 
 

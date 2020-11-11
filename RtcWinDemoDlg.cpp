@@ -113,6 +113,7 @@ BOOL CRtcWinDemoDlg::OnInitDialog()
 	// TODO: 在此添加额外的初始化代码
 	RTCManagerConfig config;
 	config.priority = "RESOLUTION";
+	// RTCManager will call AddTrack() and RemoveTrack()
 	rtc_manager_ = std::make_shared<RTCManager>(config, this);
 
 	CString strCAFilePath = GetAbsFilePath(WSS_CA_CERT);
@@ -251,17 +252,17 @@ void CRtcWinDemoDlg::RemoveTrack(webrtc::VideoTrackInterface* track) {
 void CRtcWinDemoDlg::OnIceCandidate(std::string uid, const std::string mid, const std::string sdp) {
 	std::shared_ptr<RtcClient> client = GetClient(uid);
 	if (client) {
-	if (client->ShouldSendOffer()) {
-		std::string sdp;
-		if (client->GetOffer(sdp)) {
-			if (client->IsLocalUser()) {
-				Publish(user_id_, sdp);
-			} else {
-				Subscribe(client->GetUserId(), client->GetMid(), sdp);
+		if (client->ShouldSendOffer()) {
+			std::string sdp;
+			if (client->GetOffer(sdp)) {
+				if (client->IsLocalUser()) {
+					Publish(user_id_, sdp);
+				} else {
+					Subscribe(client->GetUserId(), client->GetMid(), sdp);
+				}
+				client->SetSendOffer(false);
 			}
-			client->SetSendOffer(false);
 		}
-	}
 		Trickle(uid, client->GetMid(), sdp);
 	}
 }
@@ -304,6 +305,7 @@ void CRtcWinDemoDlg::OnBnClickedBtnJoin()
 
 		GetDlgItem(IDC_BTN_JOIN)->EnableWindow(FALSE);
 		GetDlgItem(IDC_BTN_LEAVE)->EnableWindow(TRUE);
+		GetDlgItem(IDC_BTN_SEND)->EnableWindow(TRUE);
 		local_published_ = false;
 		joined_room_ = true;
 	}
@@ -320,13 +322,26 @@ void CRtcWinDemoDlg::OnBnClickedBtnLeave()
 		RemoveAllClients();
 		GetDlgItem(IDC_BTN_JOIN)->EnableWindow(TRUE);
 		GetDlgItem(IDC_BTN_LEAVE)->EnableWindow(FALSE);
+		GetDlgItem(IDC_BTN_SEND)->EnableWindow(FALSE);
 		joined_room_ = false;
 	}
 }
 
 void CRtcWinDemoDlg::OnBnClickedBtnSend()
 {
-
+	if (joined_room_) {
+		CString chatMsg;
+		m_editMessage.GetWindowText(chatMsg);
+		if (chatMsg.IsEmpty()) {
+			AfxMessageBox(_T("Empty input message"));
+			return;
+		}
+		SendChatMessage(CStringToStdString(chatMsg));
+		m_editMessage.SetWindowText(_T(""));
+	}
+	else {
+		AfxMessageBox(_T("Cannot send chat message since you have not joined a room."));
+	}
 }
 
 int CRtcWinDemoDlg::ConvertMethodToCommand(std::string method) {
@@ -964,6 +979,38 @@ void CRtcWinDemoDlg::OnChatMessage(cJSON* root_json) {
 
 }
 
+/*
+* {"notification":true,"method":"broadcast","data":{"info":{"msg":"hello","senderName":"vivo"},"rid":"byte","uid":"2556a3dc-32f1-44c5-85b0-4516fa92f8d1"}}
+*/
+void CRtcWinDemoDlg::SendChatMessage(std::string msg) {
+	cJSON* root_json = cJSON_CreateObject();
+
+	cJSON_AddItemToObject(root_json, "notification", cJSON_CreateBool(true));
+	cJSON_AddItemToObject(root_json, "method", cJSON_CreateString("broadcast"));
+
+	cJSON* data_json = cJSON_CreateObject();
+	cJSON_AddItemToObject(root_json, "data", data_json);
+	cJSON_AddItemToObject(data_json, "rid", cJSON_CreateString(room_id_.c_str()));
+	cJSON_AddItemToObject(data_json, "uid", cJSON_CreateString(user_id_.c_str()));
+
+	cJSON* info_json = cJSON_CreateObject();
+	cJSON_AddItemToObject(data_json, "info", info_json);
+	cJSON_AddItemToObject(info_json, "senderName", cJSON_CreateString(user_name_.c_str()));
+	cJSON_AddItemToObject(info_json, "msg", cJSON_CreateString(msg.c_str()));
+
+	char* request = cJSON_Print(root_json);
+	cJSON_Delete(root_json);
+
+	LogPrintf(request);
+	if (websocket_ && request) {
+		websocket_->sendMessage(std::make_shared<std::string>(request));
+	}
+
+	if (request) {
+		cJSON_free(request);
+	}
+}
+
 void CRtcWinDemoDlg::PublishLocalStream(bool publish) {
 	if (local_published_ != publish) {
 		if (publish) {
@@ -999,6 +1046,7 @@ std::shared_ptr<RtcClient> CRtcWinDemoDlg::AddClient(std::string uid, std::strin
 	if (it == map_of_users_.end()) {
 		map_of_users_[uid] = std::make_shared<RtcClient>(uid, name, rtc_manager_, uid == user_id_);
 		if (map_of_users_[uid]) {
+			// RTCStateObserver will call OnIceCandidate()
 			map_of_users_[uid]->SetStateObserver(this);
 			map_of_users_[uid]->CreatePeerConnection();
 		}

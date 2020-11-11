@@ -65,11 +65,11 @@ public:
 	virtual void onConnectionError();
 	virtual void onReceiveMessage(std::string& message);
 
-	// VideoTrackReceiver
+	// VideoTrackReceiver - RTCManager
 	virtual void AddTrack(webrtc::VideoTrackInterface* track, bool is_local);
 	virtual void RemoveTrack(webrtc::VideoTrackInterface* track);
 
-	// RtcClientStateObserver
+	// RtcClientStateObserver - RTCClient
 	virtual void OnIceCandidate(std::string uid, const std::string mid, const std::string sdp);
 
 	// onReceiveMessage() will call these two functions
@@ -146,4 +146,6 @@ public:
 	CEdit m_editRoomId;
 	CEdit m_editUserId;
 	afx_msg void OnDestroy();
+
+	void SendChatMessage(std::string msg);
 };

@@ -3,6 +3,10 @@ webrtc
 # visual studio
 .vs
 x64
+.user
+.filter
+bin
+
 
 # Prerequisites
 *.d
