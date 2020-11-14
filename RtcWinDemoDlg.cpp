@@ -126,7 +126,13 @@ BOOL CRtcWinDemoDlg::OnInitDialog()
 	auto_publish_ = true;
 
 	user_id_ = GenerateUUID();
-	srand(GetTickCount());
+	
+	// spare windows can be allocated to the video tracks
+	win_spare_.push(IDC_REMOTE_WIN_1);
+	win_spare_.push(IDC_REMOTE_WIN_2);
+	win_spare_.push(IDC_REMOTE_WIN_3);
+
+	srand(GetTickCount64());
 	session_id_ = rand()%0xFFFF;
 	m_editRoomId.SetWindowText(_T("bytertc"));
 	m_editUserId.SetWindowText(_T("pc"));
@@ -220,8 +226,6 @@ void CRtcWinDemoDlg::onReceiveMessage(std::string& message) {
 	cJSON_Delete(root_json);
 }
 
-// Todo(kangjx)
-//		AllocateWindow for remote track is set to IDC_REMOTE_WIN_1 by default.
 void CRtcWinDemoDlg::AddTrack(webrtc::VideoTrackInterface* track, bool is_local) {
 	if (track && track->kind() == webrtc::MediaStreamTrackInterface::kVideoKind) {
 		std::string track_id = track->id();
@@ -236,8 +240,6 @@ void CRtcWinDemoDlg::AddTrack(webrtc::VideoTrackInterface* track, bool is_local)
 	}
 }
 
-// Todo(kangjx)
-//		The window is not removed.
 void CRtcWinDemoDlg::RemoveTrack(webrtc::VideoTrackInterface* track) {
 	if (track && track->kind() == webrtc::MediaStreamTrackInterface::kVideoKind) {
 		std::string track_id = track->id();
@@ -245,6 +247,11 @@ void CRtcWinDemoDlg::RemoveTrack(webrtc::VideoTrackInterface* track) {
 		if (it != map_of_video_renders_.end()) {
 			it->second->SetTrack(nullptr);
 			map_of_video_renders_.erase(it);
+		}
+		auto wit = map_of_video_wins_.find(track_id);
+		if (wit != map_of_video_wins_.end()) {
+			win_spare_.push(wit->second);
+			map_of_video_wins_.erase(wit);
 		}
 	}
 }
@@ -272,15 +279,24 @@ HWND CRtcWinDemoDlg::AllocateWindow(bool is_local, std::string track_id) {
 	if (is_local) {
 		pWnd = GetDlgItem(IDC_LOCAL_WIN);
 	} else {
-		pWnd = GetDlgItem(IDC_REMOTE_WIN_1);
-		if (pWnd) {
-			auto it = map_of_video_renders_.begin();
-			while (it != map_of_video_renders_.end()) {
-				if (it->second->GetWindow() == pWnd->GetSafeHwnd()) {
-					return NULL;
+		if (!win_spare_.empty()) {
+			auto win_id = win_spare_.front();
+			win_spare_.pop();
+			pWnd = GetDlgItem(win_id);
+			if (pWnd) {
+				auto it = map_of_video_renders_.begin();
+				while (it != map_of_video_renders_.end()) {
+					// if the window to be allocated has been allocated to another video track, return
+					if (it->second->GetWindow() == pWnd->GetSafeHwnd()) {
+						return NULL;
+					}
+					it++;
 				}
-				it++;
+				map_of_video_wins_[track_id] = win_id;
 			}
+		}
+		else {
+			return NULL;
 		}
 	}
 	return pWnd ? pWnd->GetSafeHwnd() : NULL;
@@ -339,7 +355,7 @@ void CRtcWinDemoDlg::OnBnClickedBtnSend()
 		SendChatMessage(CStringToStdString(chatMsg));
 		m_editMessage.SetWindowText(_T(""));
 	}
-	else {
+	else { // in fact, this won't happen
 		AfxMessageBox(_T("Cannot send chat message since you have not joined a room."));
 	}
 }
