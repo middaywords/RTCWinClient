@@ -120,6 +120,9 @@ protected:
 	std::map<std::string, std::shared_ptr<webrtc::VideoRenderGDI>> map_of_video_renders_;
 	std::recursive_mutex lock_;
 
+	std::queue<size_t> win_spare_;
+	std::map<std::string, size_t> map_of_video_wins_;
+
 	std::string room_id_;
 	std::string user_name_;
 	std::string user_id_;
