@@ -1,17 +1,31 @@
 # RTCWinClient
 Windows WebRTC client.
 
+TODO(optional, 11.14)
+
+* Face beautification
+
+* Draw board
+
+  
+
+TODO(11.10)
+
 Goal
 
-- [ ] Support multi-client meeting
-- [ ] Support group chatting
+- [x] Support multi-client meeting
+- [x] Support group chatting
 
 Bugs to be fixed
 
-- [ ] Show video in different windows.
+- [x] Show video in different windows.
 - [x] `CRtcWinDemoDlg::OnBnClickedBtnSend() ` no action 
-- [ ] `CRtcWinDemoDlg::AllocateWindow(...)` does not support showing multiple video tracks
+- [x] `CRtcWinDemoDlg::AllocateWindow(...)` does not support showing multiple video tracks
 
 
+
+Reference
 
 Signaling message interface: https://bytedance.feishu.cn/docs/doccnYnTgMt819LtwSGqvehcfNh
+
+Web example: https://rtcmeet.me/
